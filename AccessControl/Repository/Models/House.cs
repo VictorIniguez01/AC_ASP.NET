@@ -13,9 +13,9 @@ public partial class House
 
     public int? HouseNumber { get; set; }
 
-    public virtual ICollection<AccessVisitor> AccessVisitors { get; set; } = new List<AccessVisitor>();
-
     public virtual ICollection<Resident> Residents { get; set; } = new List<Resident>();
+
+    public virtual ICollection<Visitor> Visitors { get; set; } = new List<Visitor>();
 
     public virtual Zone? Zone { get; set; }
 }

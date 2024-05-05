@@ -15,8 +15,6 @@ public partial class ControlAccessContext : DbContext
     {
     }
 
-    public virtual DbSet<AccessResident> AccessResidents { get; set; }
-
     public virtual DbSet<AccessVisitor> AccessVisitors { get; set; }
 
     public virtual DbSet<Car> Cars { get; set; }
@@ -37,19 +35,6 @@ public partial class ControlAccessContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<AccessResident>(entity =>
-        {
-            entity.HasKey(e => e.AccessResidentId).HasName("PK__AccessRe__5D4CD8FFC1670F0C");
-
-            entity.ToTable("AccessResident");
-
-            entity.Property(e => e.AccessResidentEntry).HasColumnType("datetime");
-
-            entity.HasOne(d => d.Resident).WithMany(p => p.AccessResidents)
-                .HasForeignKey(d => d.ResidentId)
-                .HasConstraintName("FK__AccessRes__Resid__5CD6CB2B");
-        });
-
         modelBuilder.Entity<AccessVisitor>(entity =>
         {
             entity.HasKey(e => e.AccessVisitorId).HasName("PK__AccessVi__AD7F8B29DBC9B580");
@@ -57,18 +42,6 @@ public partial class ControlAccessContext : DbContext
             entity.ToTable("AccessVisitor");
 
             entity.Property(e => e.AccessVisitorEntry).HasColumnType("datetime");
-
-            entity.HasOne(d => d.Car).WithMany(p => p.AccessVisitors)
-                .HasForeignKey(d => d.CarId)
-                .HasConstraintName("FK__AccessVis__CarId__5629CD9C");
-
-            entity.HasOne(d => d.House).WithMany(p => p.AccessVisitors)
-                .HasForeignKey(d => d.HouseId)
-                .HasConstraintName("FK__AccessVis__House__5535A963");
-
-            entity.HasOne(d => d.Visitor).WithMany(p => p.AccessVisitors)
-                .HasForeignKey(d => d.VisitorId)
-                .HasConstraintName("FK__AccessVis__Visit__571DF1D5");
         });
 
         modelBuilder.Entity<Car>(entity =>
@@ -188,6 +161,14 @@ public partial class ControlAccessContext : DbContext
             entity.Property(e => e.VisitorName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.Car).WithMany(p => p.Visitors)
+                .HasForeignKey(d => d.CarId)
+                .HasConstraintName("FK__Visitor__CarId__6E01572D");
+
+            entity.HasOne(d => d.House).WithMany(p => p.Visitors)
+                .HasForeignKey(d => d.HouseId)
+                .HasConstraintName("FK__Visitor__HouseId__6EF57B66");
         });
 
         modelBuilder.Entity<Zone>(entity =>

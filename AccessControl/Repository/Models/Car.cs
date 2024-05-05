@@ -15,5 +15,5 @@ public partial class Car
 
     public string? CarColor { get; set; }
 
-    public virtual ICollection<AccessVisitor> AccessVisitors { get; set; } = new List<AccessVisitor>();
+    public virtual ICollection<Visitor> Visitors { get; set; } = new List<Visitor>();
 }

@@ -13,13 +13,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 //Services
-builder.Services.AddScoped<ICommonService<AccessResidentDto, AccessResidentInsertDto, AccessResidentUpdateDto>, AccessResidentService>();
-builder.Services.AddScoped<ICommonService<AccessVisitorDto, AccessVisitorInsertDto, AccessVisitorUpdateDto>, AccessVisitorService>();
-builder.Services.AddScoped<ICommonService<CarDto, CarInsertDto, CarUpdateDto>, CarService>();
-builder.Services.AddScoped<ICommonService<VisitorDto, VisitorInsertDto,VisitorUpdateDto>, VisitorService>();
+builder.Services.AddScoped<ICommonService<CarDto, CarInsertDto>, CarService>();
+builder.Services.AddScoped<ICommonService<VisitorDto, VisitorInsertDto>, VisitorService>();
+
+builder.Services.AddScoped<ICommonService<AccessVisitorDto, AccessVisitorInsertDto>, AccessVisitorService>();
+builder.Services.AddScoped<IUpdateService<AccessVisitorDto, AccessVisitorUpdateDto>, AccessVisitorService>();
 
 //Repositorys
-builder.Services.AddScoped<IRepository<AccessResident>, AccessResidentRepository>();
 builder.Services.AddScoped<IRepository<AccessVisitor>, AccessVisitorRepository>();
 builder.Services.AddScoped<IRepository<Car>, CarRepository>();
 builder.Services.AddScoped<IRepository<Visitor>, VisitorRepository>();
@@ -35,15 +35,11 @@ builder.Services.AddDbContext<ControlAccessContext>(options =>
 });
 
 //Validators
-builder.Services.AddScoped<IValidator<AccessResidentInsertDto>, AccessResidentInsertValidator>();
-builder.Services.AddScoped<IValidator<AccessResidentUpdateDto>, AccessResidentUpdateValidator>();
+builder.Services.AddScoped<IValidator<CarInsertDto>, CarInsertValidator>();
+builder.Services.AddScoped<IValidator<VisitorInsertDto>, VisitorInsertValidator>();
+
 builder.Services.AddScoped<IValidator<AccessVisitorInsertDto>, AccessVisitorInsertValidator>();
 builder.Services.AddScoped<IValidator<AccessVisitorUpdateDto>, AccessVisitorUpdateValidator>();
-builder.Services.AddScoped<IValidator<CarInsertDto>, CarInsertValidator>();
-builder.Services.AddScoped<IValidator<CarUpdateDto>, CarUpdateValidator>();
-builder.Services.AddScoped<IValidator<VisitorInsertDto>, VisitorInsertValidator>();
-builder.Services.AddScoped<IValidator<VisitorUpdateDto>, VisitorUpdateValidator>();
-
 
 //Mappers
 builder.Services.AddAutoMapper(typeof(MappingProfile));

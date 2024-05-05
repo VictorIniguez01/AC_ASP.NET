@@ -8,11 +8,6 @@ namespace AccessControl.Automappers
     {
         public MappingProfile() 
         {
-            //AccessResident
-            CreateMap<AccessResidentInsertDto, AccessResident>();
-            CreateMap<AccessResident, AccessResidentDto>();
-            CreateMap<AccessResidentUpdateDto, AccessResident>();
-
             //AccessVisitor
             CreateMap<AccessVisitorInsertDto, AccessVisitor>();
             CreateMap<AccessVisitor, AccessVisitorDto>();
@@ -21,12 +16,10 @@ namespace AccessControl.Automappers
             //Car
             CreateMap<CarInsertDto, Car>();
             CreateMap<Car, CarDto>();
-            CreateMap<CarUpdateDto, Car>();
 
             //Visitor
             CreateMap<VisitorInsertDto, Visitor>();
             CreateMap<Visitor, VisitorDto>();
-            CreateMap<VisitorUpdateDto, Visitor>();
         }
     }
 }

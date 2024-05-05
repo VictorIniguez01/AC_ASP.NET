@@ -5,6 +5,10 @@ namespace AccessControl.Validators
 {
     public class AccessVisitorUpdateValidator : AbstractValidator<AccessVisitorUpdateDto>
     {
-        public AccessVisitorUpdateValidator() { }
+        public AccessVisitorUpdateValidator()
+        {
+            RuleFor(x => x.IsEntry).NotEmpty();
+            RuleFor(x => x.IsGoingZone).NotEmpty();
+        }
     }
 }

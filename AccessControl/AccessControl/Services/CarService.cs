@@ -5,15 +5,33 @@ using AutoMapper;
 
 namespace AccessControl.Services
 {
-    public class CarService : ICommonService<CarDto, CarInsertDto, CarUpdateDto>
+    public class CarService : ICommonService<CarDto, CarInsertDto>
     {
         private IRepository<Car> _carRepository;
         private IMapper _mapper;
+        public List<string> Errors { get; }
         public CarService(IRepository<Car> carRepository,
                           IMapper mapper)
         {
             _carRepository = carRepository;
             _mapper = mapper;
+            Errors = new List<string>();
+        }
+
+        public async Task<IEnumerable<CarDto>> Get()
+        {
+            IEnumerable<Car> cars = await _carRepository.Get();
+
+            return cars.Select(c => _mapper.Map<CarDto>(c));
+        }
+
+        public async Task<CarDto> GetById(int id)
+        {
+            Car car = await _carRepository.GetById(id);
+            if (car == null)
+                return null;
+
+            return _mapper.Map<CarDto>(car);
         }
 
         public async Task<CarDto> Add(CarInsertDto insertDto)
@@ -40,34 +58,14 @@ namespace AccessControl.Services
             return carDto;
         }
 
-        public async Task<IEnumerable<CarDto>> Get()
+        public bool Validate(CarInsertDto insertDto)
         {
-            IEnumerable<Car> cars = await _carRepository.Get();
-
-            return cars.Select(c => _mapper.Map<CarDto>(c));
-        }
-
-        public async Task<CarDto> GetById(int id)
-        {
-            Car car = await _carRepository.GetById(id);
-            if (car == null)
-                return null;
-
-            return _mapper.Map<CarDto>(car);
-        }
-
-        public async Task<CarDto> Update(int id, CarUpdateDto updateDto)
-        {
-            Car car = await _carRepository.GetById(id);
-            if (car == null)
-                return null;
-
-            car = _mapper.Map<CarUpdateDto, Car>(updateDto ,car);
-
-            _carRepository.Update(car);
-            await _carRepository.Save();
-
-            return _mapper.Map<CarDto>(car);
+            if (_carRepository.Search(av => av.CarPlate == insertDto.CarPlate).Count() > 0)
+            {
+                Errors.Add("Existing plate. The car is already inside");
+                return false;
+            }
+            return true;
         }
     }
 }

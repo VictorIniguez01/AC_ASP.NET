@@ -15,8 +15,6 @@ public partial class Resident
 
     public int? HouseId { get; set; }
 
-    public virtual ICollection<AccessResident> AccessResidents { get; set; } = new List<AccessResident>();
-
     public virtual ICollection<Card> Cards { get; set; } = new List<Card>();
 
     public virtual House? House { get; set; }

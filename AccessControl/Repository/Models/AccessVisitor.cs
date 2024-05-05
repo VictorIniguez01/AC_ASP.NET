@@ -9,15 +9,9 @@ public partial class AccessVisitor
 
     public DateTime? AccessVisitorEntry { get; set; }
 
-    public int? HouseId { get; set; }
-
-    public int? CarId { get; set; }
-
     public int? VisitorId { get; set; }
 
-    public virtual Car? Car { get; set; }
+    public bool? IsEntry { get; set; }
 
-    public virtual House? House { get; set; }
-
-    public virtual Visitor? Visitor { get; set; }
+    public bool? IsGoingZone { get; set; }
 }
