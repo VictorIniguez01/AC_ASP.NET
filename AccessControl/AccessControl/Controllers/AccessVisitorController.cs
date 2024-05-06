@@ -13,11 +13,13 @@ namespace AccessControl.Controllers
     {
         private IUpdateService<AccessVisitorDto, AccessVisitorUpdateDto> _updateService;
         private IValidator<AccessVisitorUpdateDto> _updateValidator;
-        public AccessVisitorController(ICommonService<AccessVisitorDto, AccessVisitorInsertDto> service,
+        public AccessVisitorController(ICreateService<AccessVisitorDto, AccessVisitorInsertDto> createService,
+                                       IReadService<AccessVisitorDto> readService,
+                                       IDeleteService<AccessVisitorDto> deleteService,
                                        IValidator<AccessVisitorInsertDto> insertValidator,
                                        IValidator<AccessVisitorUpdateDto> updateValidator,
                                        IUpdateService<AccessVisitorDto, AccessVisitorUpdateDto> updateService)
-            : base(service, insertValidator)
+            : base(createService, readService, deleteService, insertValidator)
         {
             _updateService = updateService;
             _updateValidator = updateValidator;

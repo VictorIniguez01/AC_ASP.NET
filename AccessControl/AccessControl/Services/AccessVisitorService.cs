@@ -5,7 +5,10 @@ using AutoMapper;
 
 namespace AccessControl.Services
 {
-    public class AccessVisitorService : ICommonService<AccessVisitorDto, AccessVisitorInsertDto>, IUpdateService<AccessVisitorDto, AccessVisitorUpdateDto>
+    public class AccessVisitorService : ICreateService<AccessVisitorDto, AccessVisitorInsertDto>,
+                                        IReadService<AccessVisitorDto>,
+                                        IUpdateService<AccessVisitorDto, AccessVisitorUpdateDto>,
+                                        IDeleteService<AccessVisitorDto>
     {
         private IRepository<AccessVisitor> _accessVisitorRepository;
         private IMapper _mapper;

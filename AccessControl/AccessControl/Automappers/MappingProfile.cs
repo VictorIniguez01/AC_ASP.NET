@@ -20,6 +20,18 @@ namespace AccessControl.Automappers
             //Visitor
             CreateMap<VisitorInsertDto, Visitor>();
             CreateMap<Visitor, VisitorDto>();
+
+            //UserAc
+            CreateMap<UserAc, UserAcDto>();
+
+            //Device
+            CreateMap<Device, DeviceDto>();
+
+            //House
+            CreateMap<House, HouseDto>();
+
+            //Zone
+            CreateMap<Zone, ZoneDto>();
         }
     }
 }

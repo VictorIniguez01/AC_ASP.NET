@@ -7,22 +7,46 @@ using AccessControl.Validators;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 //Services
-builder.Services.AddScoped<ICommonService<CarDto, CarInsertDto>, CarService>();
-builder.Services.AddScoped<ICommonService<VisitorDto, VisitorInsertDto>, VisitorService>();
-
-builder.Services.AddScoped<ICommonService<AccessVisitorDto, AccessVisitorInsertDto>, AccessVisitorService>();
+    //AccessVisitor
+builder.Services.AddScoped<ICreateService<AccessVisitorDto, AccessVisitorInsertDto>, AccessVisitorService>();
+builder.Services.AddScoped<IReadService<AccessVisitorDto>, AccessVisitorService>();
 builder.Services.AddScoped<IUpdateService<AccessVisitorDto, AccessVisitorUpdateDto>, AccessVisitorService>();
+builder.Services.AddScoped<IDeleteService<AccessVisitorDto>, AccessVisitorService>();
+    //Car
+builder.Services.AddScoped<ICreateService<CarDto, CarInsertDto>, CarService>();
+builder.Services.AddScoped<IReadService<CarDto>, CarService>();
+builder.Services.AddScoped<IDeleteService<CarDto>, CarService>();
+    //Visitor
+builder.Services.AddScoped<ICreateService<VisitorDto, VisitorInsertDto>, VisitorService>();
+builder.Services.AddScoped<IReadService<VisitorDto>, VisitorService>();
+builder.Services.AddScoped<IDeleteService<VisitorDto>, VisitorService>();
+    //UserAc
+builder.Services.AddScoped<IReadService<UserAcDto>, UserAcService>();
+builder.Services.AddScoped<ILoginService<UserAcDto>, UserAcService>();
+    //Device
+builder.Services.AddScoped<IReadService<DeviceDto>, DeviceService>();
+    //Zone
+builder.Services.AddScoped<IReadService<ZoneDto>, ZoneService>();
+    //House
+builder.Services.AddScoped<IReadService<HouseDto>, HouseService>();
 
 //Repositorys
 builder.Services.AddScoped<IRepository<AccessVisitor>, AccessVisitorRepository>();
 builder.Services.AddScoped<IRepository<Car>, CarRepository>();
 builder.Services.AddScoped<IRepository<Visitor>, VisitorRepository>();
+builder.Services.AddScoped<IRepository<UserAc>, UserAcRepository>();
+builder.Services.AddScoped<IRepository<Device>, DeviceRepository>();
+builder.Services.AddScoped<IRepository<Zone>, ZoneRepository>();
+builder.Services.AddScoped<IRepository<House>, HouseRepository>();
 
 //BD
 IConfiguration configuration = new ConfigurationBuilder()
@@ -50,6 +74,21 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+    };
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -60,6 +99,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

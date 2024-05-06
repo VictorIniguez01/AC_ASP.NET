@@ -11,8 +11,10 @@ namespace AccessControl.Controllers
     [ApiController]
     public class CarController : CommonController<Car, CarDto, CarInsertDto>
     {
-        public CarController(ICommonService<CarDto, CarInsertDto> carService,
+        public CarController(ICreateService<CarDto, CarInsertDto> createService,
+                             IReadService<CarDto> readService,
+                             IDeleteService<CarDto> deleteService,
                              IValidator<CarInsertDto> insertValidator)
-            : base(carService, insertValidator) { }
+            : base(createService, readService, deleteService, insertValidator) { }
     }
 }

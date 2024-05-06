@@ -6,23 +6,29 @@ namespace AccessControl.Controllers
 {
     public class CommonController<T, TDto, TIDto> : ControllerBase
     {
-        protected ICommonService<TDto, TIDto> _service;
+        protected ICreateService<TDto, TIDto> _createService;
+        protected IReadService<TDto> _readService;
+        protected IDeleteService<TDto> _deleteService;
         protected IValidator<TIDto> _insertValidator;
-        public CommonController(ICommonService<TDto, TIDto> service,
+        public CommonController(ICreateService<TDto, TIDto> createService,
+                                IReadService<TDto> readService,
+                                IDeleteService<TDto> deleteService,
                                 IValidator<TIDto> insertValidator)
         {
-            _service = service;
+            _createService = createService;
+            _readService = readService;
+            _deleteService = deleteService;
             _insertValidator = insertValidator;
         }
 
         [HttpGet]
         public virtual async Task<IEnumerable<TDto>> Get()
-            => await _service.Get();
+            => await _readService.Get();
 
         [HttpGet("{id}")]
         public virtual async Task<ActionResult<TDto>> GetById(int id)
         {
-            TDto tDto = await _service.GetById(id);
+            TDto tDto = await _readService.GetById(id);
             return tDto == null ? NotFound() : Ok(tDto);
         }
 
@@ -33,10 +39,10 @@ namespace AccessControl.Controllers
             if(!validationResult.IsValid)
                 return BadRequest(validationResult.Errors);
 
-            if(!_service.Validate(tiDto))
-                return BadRequest(_service.Errors);
+            if(!_createService.Validate(tiDto))
+                return BadRequest(_createService.Errors);
 
-            TDto tDto = await _service.Add(tiDto);
+            TDto tDto = await _createService.Add(tiDto);
             int tId = (tDto as ICommonDto)?.Id ?? 0;
             return CreatedAtAction(nameof(GetById), new { id = tId }, tDto);
         }
@@ -44,7 +50,7 @@ namespace AccessControl.Controllers
         [HttpDelete("{id}")]
         public virtual async Task<ActionResult<TDto>> Delete(int id)
         {
-            TDto tDto = await _service.Delete(id);
+            TDto tDto = await _deleteService.Delete(id);
             return tDto == null ? NotFound() : Ok(tDto);
         }
     }

@@ -5,7 +5,9 @@ using AutoMapper;
 
 namespace AccessControl.Services
 {
-    public class CarService : ICommonService<CarDto, CarInsertDto>
+    public class CarService : ICreateService<CarDto, CarInsertDto>,
+                              IReadService<CarDto>,
+                              IDeleteService<CarDto>
     {
         private IRepository<Car> _carRepository;
         private IMapper _mapper;

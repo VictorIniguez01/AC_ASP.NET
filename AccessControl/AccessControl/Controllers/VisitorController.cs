@@ -11,8 +11,10 @@ namespace AccessControl.Controllers
     [ApiController]
     public class VisitorController : CommonController<Visitor, VisitorDto, VisitorInsertDto>
     {
-        public VisitorController(ICommonService<VisitorDto, VisitorInsertDto> service,
+        public VisitorController(ICreateService<VisitorDto, VisitorInsertDto> createService,
+                                 IReadService<VisitorDto> readService,
+                                 IDeleteService<VisitorDto> deleteService,
                                  IValidator<VisitorInsertDto> insertValidator) 
-            : base(service, insertValidator) { }
+            : base(createService, readService, deleteService, insertValidator) { }
     }
 }
