@@ -30,8 +30,7 @@ builder.Services.AddScoped<ICreateService<VisitorDto, VisitorInsertDto>, Visitor
 builder.Services.AddScoped<IReadService<VisitorDto>, VisitorService>();
 builder.Services.AddScoped<IDeleteService<VisitorDto>, VisitorService>();
     //UserAc
-builder.Services.AddScoped<ILoginService<UserAcDto>, UserAcService>();
-builder.Services.AddScoped<IUserAcService<DeviceDto, VisitorDto, CarDto, AccessVisitorDto, AccessDetailsDto>, UserAcService>();
+builder.Services.AddScoped<ISessionService<UserAcDto>, UserAcService>();
     //Device
 builder.Services.AddScoped<IReadService<DeviceDto>, DeviceService>();
 
@@ -40,7 +39,6 @@ builder.Services.AddScoped<IRepository<AccessVisitor>, AccessVisitorRepository>(
 builder.Services.AddScoped<IRepository<Car>, CarRepository>();
 builder.Services.AddScoped<IRepository<Visitor>, VisitorRepository>();
 builder.Services.AddScoped<IRepository<UserAc>, UserAcRepository>();
-builder.Services.AddScoped<IUserRepository<Device, Visitor, Car, AccessVisitor>, UserAcRepository>();
 builder.Services.AddScoped<IRepository<Device>, DeviceRepository>();
 builder.Services.AddScoped<IRepository<Zone>, ZoneRepository>();
 builder.Services.AddScoped<IRepository<House>, HouseRepository>();

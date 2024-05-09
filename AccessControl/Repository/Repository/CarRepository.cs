@@ -23,6 +23,48 @@ namespace Repository.Repository
         public async Task<Car> GetById(int id)
             => await _context.Cars.FindAsync(id);
 
+        public async Task<IEnumerable<Car>> GetByUserId(int userAcId)
+        {
+            var query = _context.UserAcs
+                        .Join(_context.Devices, u => u.UserAcId, d => d.UserAcId, (u, d) => new
+                        {
+                            UserAc = u,
+                            Device = d
+                        })
+                        .Join(_context.Zones, ud => ud.Device.ZoneId, z => z.ZoneId, (ud, z) => new
+                        {
+                            ud.UserAc,
+                            ud.Device,
+                            Zone = z
+                        })
+                        .Join(_context.Houses, udz => udz.Zone.ZoneId, h => h.ZoneId, (udz, h) => new
+                        {
+                            udz.UserAc,
+                            udz.Device,
+                            udz.Zone,
+                            House = h
+                        })
+                        .Join(_context.Visitors, udzh => udzh.House.HouseId, v => v.HouseId, (udzh, v) => new
+                        {
+                            udzh.UserAc,
+                            udzh.Device,
+                            udzh.Zone,
+                            udzh.House,
+                            Visitor = v
+                        })
+                        .Join(_context.Cars, udzhv => udzhv.Visitor.CarId, c => c.CarId, (udzhv, c) => new
+                        {
+                            udzhv.UserAc,
+                            udzhv.Device,
+                            udzhv.Zone,
+                            udzhv.House,
+                            udzhv.Visitor,
+                            Car = c
+                        });
+
+            return await query.Where(u => u.UserAc.UserAcId == userAcId).Select(c => c.Car).ToListAsync();
+        }
+
         public Task Save()
             => _context.SaveChangesAsync();
 

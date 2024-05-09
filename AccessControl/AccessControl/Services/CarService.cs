@@ -36,6 +36,13 @@ namespace AccessControl.Services
             return _mapper.Map<CarDto>(car);
         }
 
+        public async Task<IEnumerable<CarDto>> GetByUserId(int userAcId)
+        {
+            IEnumerable<Car> cars = await _carRepository.GetByUserId(userAcId);
+
+            return cars.Select(c => _mapper.Map<CarDto>(c));
+        }
+
         public async Task<CarDto> Add(CarInsertDto insertDto)
         {
             Car car = _mapper.Map<Car>(insertDto);

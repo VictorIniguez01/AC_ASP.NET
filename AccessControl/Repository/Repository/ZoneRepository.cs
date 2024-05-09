@@ -23,6 +23,24 @@ namespace Repository.Repository
         public async Task<Zone> GetById(int id)
             => await _context.Zones.FindAsync(id);
 
+        public async Task<IEnumerable<Zone>> GetByUserId(int userAcId)
+        {
+            var query = _context.UserAcs
+                        .Join(_context.Devices, u => u.UserAcId, d => d.UserAcId, (u, d) => new
+                        {
+                            UserAc = u,
+                            Device = d
+                        })
+                        .Join(_context.Zones, ud => ud.Device.ZoneId, z => z.ZoneId, (ud, z) => new
+                        {
+                            ud.UserAc,
+                            ud.Device,
+                            Zone = z
+                        });
+
+            return await query.Where(u => u.UserAc.UserAcId == userAcId).Select(z => z.Zone).ToListAsync();
+        }
+
         public async Task Save()
             => await _context.SaveChangesAsync();
 

@@ -23,6 +23,18 @@ namespace Repository.Repository
         public async Task<Device> GetById(int id)
             => await _context.Devices.FindAsync(id);
 
+        public async Task<IEnumerable<Device>> GetByUserId(int userAcId)
+        {
+            var query = _context.UserAcs
+                        .Join(_context.Devices, u => u.UserAcId, d => d.UserAcId, (u, d) => new
+                        {
+                            UserAc = u,
+                            Device = d
+                        });
+
+            return await query.Where(u => u.UserAc.UserAcId == userAcId).Select(d => d.Device).ToListAsync();
+        }
+
         public Task Save()
             => _context.SaveChangesAsync();
 

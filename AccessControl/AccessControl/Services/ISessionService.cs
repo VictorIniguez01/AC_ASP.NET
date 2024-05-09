@@ -1,6 +1,6 @@
 ﻿namespace AccessControl.Services
 {
-    public interface ILoginService<T>
+    public interface ISessionService<T>
     {
         Task<T> Auth(T user);
     }

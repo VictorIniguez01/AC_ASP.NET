@@ -36,6 +36,13 @@ namespace AccessControl.Services
             return _mapper.Map<VisitorDto>(visitor);
         }
 
+        public async Task<IEnumerable<VisitorDto>> GetByUserId(int userAcId)
+        {
+            IEnumerable<Visitor> visitors = await _visitorRepository.GetByUserId(userAcId);
+
+            return visitors.Select(v => _mapper.Map<VisitorDto>(v));
+        }
+
         public async Task<VisitorDto> Add(VisitorInsertDto insertDto)
         {
             Visitor visitor = _mapper.Map<Visitor>(insertDto);

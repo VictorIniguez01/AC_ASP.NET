@@ -15,6 +15,8 @@ public partial class Visitor
 
     public int? HouseId { get; set; }
 
+    public virtual ICollection<AccessVisitor> AccessVisitors { get; set; } = new List<AccessVisitor>();
+
     public virtual Car? Car { get; set; }
 
     public virtual House? House { get; set; }

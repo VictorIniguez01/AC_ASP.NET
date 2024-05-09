@@ -14,4 +14,6 @@ public partial class AccessVisitor
     public bool? IsEntry { get; set; }
 
     public bool? IsGoingZone { get; set; }
+
+    public virtual Visitor? Visitor { get; set; }
 }

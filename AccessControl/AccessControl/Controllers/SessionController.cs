@@ -14,19 +14,19 @@ namespace AccessControl.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class SessionController : ControllerBase
     {
-        private ILoginService<UserAcDto> _loginService;
+        private ISessionService<UserAcDto> _loginService;
         private IConfiguration _configuration;
-        public LoginController(IConfiguration configuration,
-                               ILoginService<UserAcDto> loginService)
+        public SessionController(IConfiguration configuration,
+                               ISessionService<UserAcDto> loginService)
         {
             _configuration = configuration;
             _loginService = loginService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Login(UserAcDto userAcDto)
+        [HttpPost("Signin")]
+        public async Task<IActionResult> Signin(UserAcDto userAcDto)
         {
             UserAcDto user = await _loginService.Auth(userAcDto);
             if (user == null)

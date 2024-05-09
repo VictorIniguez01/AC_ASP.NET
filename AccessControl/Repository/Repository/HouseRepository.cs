@@ -23,6 +23,31 @@ namespace Repository.Repository
         public async Task<House> GetById(int id)
             => await _context.Houses.FindAsync(id);
 
+        public async Task<IEnumerable<House>> GetByUserId(int userAcId)
+        {
+            var query = _context.UserAcs
+                        .Join(_context.Devices, u => u.UserAcId, d => d.UserAcId, (u, d) => new
+                        {
+                            UserAc = u,
+                            Device = d
+                        })
+                        .Join(_context.Zones, ud => ud.Device.ZoneId, z => z.ZoneId, (ud, z) => new
+                        {
+                            ud.UserAc,
+                            ud.Device,
+                            Zone = z
+                        })
+                        .Join(_context.Houses, udz => udz.Zone.ZoneId, h => h.ZoneId, (udz, h) => new
+                        {
+                            udz.UserAc,
+                            udz.Device,
+                            udz.Zone,
+                            House = h
+                        });
+
+            return await query.Where(u => u.UserAc.UserAcId == userAcId).Select(h => h.House).ToListAsync();
+        }
+
         public Task Save()
             => _context.SaveChangesAsync();
 

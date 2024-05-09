@@ -31,5 +31,12 @@ namespace AccessControl.Services
 
             return _mapper.Map<DeviceDto>(device);
         }
+
+        public async Task<IEnumerable<DeviceDto>> GetByUserId(int userAcId)
+        {
+            IEnumerable<Device> devices = await _deviceRepository.GetByUserId(userAcId);
+
+            return devices.Select(d => _mapper.Map<DeviceDto>(d));
+        }
     }
 }

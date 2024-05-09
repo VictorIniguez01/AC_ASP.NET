@@ -42,6 +42,10 @@ public partial class ControlAccessContext : DbContext
             entity.ToTable("AccessVisitor");
 
             entity.Property(e => e.AccessVisitorEntry).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Visitor).WithMany(p => p.AccessVisitors)
+                .HasForeignKey(d => d.VisitorId)
+                .HasConstraintName("Fk_visitor_id");
         });
 
         modelBuilder.Entity<Car>(entity =>
