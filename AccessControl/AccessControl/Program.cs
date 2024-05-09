@@ -30,20 +30,17 @@ builder.Services.AddScoped<ICreateService<VisitorDto, VisitorInsertDto>, Visitor
 builder.Services.AddScoped<IReadService<VisitorDto>, VisitorService>();
 builder.Services.AddScoped<IDeleteService<VisitorDto>, VisitorService>();
     //UserAc
-builder.Services.AddScoped<IReadService<UserAcDto>, UserAcService>();
 builder.Services.AddScoped<ILoginService<UserAcDto>, UserAcService>();
+builder.Services.AddScoped<IUserAcService<DeviceDto, VisitorDto, CarDto, AccessVisitorDto, AccessDetailsDto>, UserAcService>();
     //Device
 builder.Services.AddScoped<IReadService<DeviceDto>, DeviceService>();
-    //Zone
-builder.Services.AddScoped<IReadService<ZoneDto>, ZoneService>();
-    //House
-builder.Services.AddScoped<IReadService<HouseDto>, HouseService>();
 
 //Repositorys
 builder.Services.AddScoped<IRepository<AccessVisitor>, AccessVisitorRepository>();
 builder.Services.AddScoped<IRepository<Car>, CarRepository>();
 builder.Services.AddScoped<IRepository<Visitor>, VisitorRepository>();
 builder.Services.AddScoped<IRepository<UserAc>, UserAcRepository>();
+builder.Services.AddScoped<IUserRepository<Device, Visitor, Car, AccessVisitor>, UserAcRepository>();
 builder.Services.AddScoped<IRepository<Device>, DeviceRepository>();
 builder.Services.AddScoped<IRepository<Zone>, ZoneRepository>();
 builder.Services.AddScoped<IRepository<House>, HouseRepository>();
@@ -75,18 +72,21 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
 {
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]));
+    var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature);
+
+    options.RequireHttpsMetadata = false;
+
+    options.TokenValidationParameters = new TokenValidationParameters()
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        ValidateAudience = false,
+        ValidateIssuer = false,
+        IssuerSigningKey = signingKey,
     };
+
 });
 
 var app = builder.Build();

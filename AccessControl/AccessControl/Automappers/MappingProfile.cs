@@ -26,12 +26,6 @@ namespace AccessControl.Automappers
 
             //Device
             CreateMap<Device, DeviceDto>();
-
-            //House
-            CreateMap<House, HouseDto>();
-
-            //Zone
-            CreateMap<Zone, ZoneDto>();
         }
     }
 }

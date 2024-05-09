@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage.Json;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -15,14 +16,11 @@ namespace AccessControl.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private IReadService<UserAcDto> _readService;
         private ILoginService<UserAcDto> _loginService;
         private IConfiguration _configuration;
-        public LoginController(IReadService<UserAcDto> readService,
-                               IConfiguration configuration,
+        public LoginController(IConfiguration configuration,
                                ILoginService<UserAcDto> loginService)
         {
-            _readService = readService;
             _configuration = configuration;
             _loginService = loginService;
         }
@@ -35,24 +33,22 @@ namespace AccessControl.Controllers
                 return NotFound();
 
             var jwt = _configuration.GetSection("Jwt");
-            var claims = new[]
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var byteKey = Encoding.UTF8.GetBytes(jwt["Key"]);
+            var tokenDes = new SecurityTokenDescriptor
             {
-                new Claim(JwtRegisteredClaimNames.Sub, jwt["Subject"]),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                new Claim("id", user.UserAcId.ToString())
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim("id", user.UserAcId.ToString()),
+                }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(byteKey),
+                                                                SecurityAlgorithms.HmacSha256Signature)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"]));
-            var signin = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = tokenHandler.CreateToken(tokenDes);
 
-            var token = new JwtSecurityToken(jwt["Issuer"], jwt["Audience"], claims, expires: DateTime.Now.AddMinutes(60), signingCredentials: signin);
-            return Ok(new 
-            {
-                success = true,
-                message = "Successed",
-                result = new JwtSecurityTokenHandler().WriteToken(token)
-            });
+            return Ok(new { Token = tokenHandler.WriteToken(token)  });
         }
     }
 }
