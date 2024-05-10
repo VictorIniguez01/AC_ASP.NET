@@ -1,6 +1,6 @@
 ﻿namespace AccessControl.DTOs
 {
-    public class AccessVisitorDto : ICommonDto
+    public class AccessVisitorDto
     {
         public int AccessVisitorId { get; set; }
 
@@ -11,7 +11,5 @@
         public bool? IsEntry { get; set; }
 
         public bool? IsGoingZone { get; set; }
-
-        public int Id => AccessVisitorId;
     }
 }

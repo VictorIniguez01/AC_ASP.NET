@@ -1,9 +1,8 @@
 ﻿using AccessControl.DTOs;
 using AccessControl.Services;
 using FluentValidation;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Repository.Models;
 using System.Security.Claims;
 
 namespace AccessControl.Controllers
@@ -27,18 +26,23 @@ namespace AccessControl.Controllers
             _insertValidator = insertValidator;
         }
 
-        [HttpGet]
+        [HttpGet("all")]
+        [Authorize(Roles = "UserResidential")]
         public virtual async Task<IEnumerable<VisitorDto>> Get()
             => await _readService.Get();
 
+
         [HttpGet("{id}")]
+        [Authorize(Roles = "UserZone,UserResidential")]
         public virtual async Task<ActionResult<VisitorDto>> GetById(int id)
         {
             VisitorDto tDto = await _readService.GetById(id);
             return tDto == null ? NotFound() : Ok(tDto);
         }
 
-        [HttpPost]
+
+        [HttpGet("user/{userAcId}")]
+        [Authorize(Roles = "UserZone")]
         public async Task<IActionResult> GetByUserId(int userAcId)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -50,7 +54,9 @@ namespace AccessControl.Controllers
             return Ok(await _readService.GetByUserId(Int32.Parse(idClaim.Value)));
         }
 
+
         [HttpPost("add")]
+        [Authorize(Roles = "UserResidential")]
         public virtual async Task<ActionResult<VisitorDto>> Add(VisitorInsertDto tiDto)
         {
             var validationResult = await _insertValidator.ValidateAsync(tiDto);
@@ -61,11 +67,12 @@ namespace AccessControl.Controllers
                 return BadRequest(_createService.Errors);
 
             VisitorDto tDto = await _createService.Add(tiDto);
-            int tId = (tDto as ICommonDto)?.Id ?? 0;
-            return CreatedAtAction(nameof(GetById), new { id = tId }, tDto);
+            return CreatedAtAction(nameof(GetById), new { id = tDto.VisitorId }, tDto);
         }
 
-        [HttpDelete("{id}")]
+
+        [HttpDelete("delete/{id}")]
+        [Authorize(Roles = "UserResidential")]
         public virtual async Task<ActionResult<VisitorDto>> Delete(int id)
         {
             VisitorDto tDto = await _deleteService.Delete(id);

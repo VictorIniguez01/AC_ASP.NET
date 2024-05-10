@@ -10,6 +10,6 @@
 
         public string? UserAcMqttTopic { get; set; }
 
-        public bool? UserAcIsCoto { get; set; }
+        public bool? UserAcIsZone { get; set; }
     }
 }

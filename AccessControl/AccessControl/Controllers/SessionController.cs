@@ -1,10 +1,6 @@
 ﻿using AccessControl.DTOs;
 using AccessControl.Services;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage.Json;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -40,6 +36,7 @@ namespace AccessControl.Controllers
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim("id", user.UserAcId.ToString()),
+                    new Claim(ClaimTypes.Role, user.UserAcIsZone == true ? "UserZone" : "UserResidential"),
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(byteKey),

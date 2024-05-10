@@ -1,6 +1,6 @@
 ﻿namespace AccessControl.DTOs
 {
-    public class VisitorDto : ICommonDto
+    public class VisitorDto
     {
         public int VisitorId { get; set; }
 
@@ -11,7 +11,5 @@
         public int? CarId { get; set; }
 
         public int? HouseId { get; set; }
-
-        public int Id => VisitorId;
     }
 }

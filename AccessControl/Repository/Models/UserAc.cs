@@ -15,7 +15,7 @@ public partial class UserAc
 
     public string? UserAcMqttTopic { get; set; }
 
-    public bool? UserAcIsCoto { get; set; }
+    public bool? UserAcIsZone { get; set; }
 
     public virtual ICollection<Device> Devices { get; set; } = new List<Device>();
 }

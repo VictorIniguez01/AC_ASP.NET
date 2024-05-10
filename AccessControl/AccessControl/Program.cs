@@ -70,7 +70,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Authentication
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("UserZonePolicy", policy => policy.RequireRole("UserZone"));
+    options.AddPolicy("UserResidentialPolicy", policy => policy.RequireRole("UserResidential"));
+});
 builder.Services.AddAuthentication("Bearer").AddJwtBearer(options =>
 {
     var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]));
